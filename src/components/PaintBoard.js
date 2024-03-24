@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PaintBoard = () => {
+const PaintBoard = ({isLoggedIn}) => {
     return (
         <div>
             

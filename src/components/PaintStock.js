@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PaintStock = () => {
+const PaintStock = ({isLoggedIn}) => {
     return (
         <div>
             

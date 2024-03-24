@@ -2,17 +2,25 @@ import React from "react";
 import { Redirect } from 'react-router-dom';
 import { Navbar, Nav, Button } from "react-bootstrap";
 import { UserRole } from "../consts/UserRoles";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
-const Header = ({ userRole, setIsLoggedIn, setUserRole, setCurrentUser }) => {
+const Header = ({ userRole, setUserRole, setIsLoggedIn, currentUser, setCurrentUser }) => {
+    let history = useHistory();
 
     const handleLogout = () => {
         setIsLoggedIn(false);
         setUserRole(UserRole.NONE);
         setCurrentUser("")
-        localStorage.removeItem('paintUser');
-        localStorage.removeItem('paintRole');
-        return <Redirect to="/" />;
+        localStorage.removeItem("loggedIn")
+        localStorage.removeItem("paintUser");
+        localStorage.removeItem("paintRole");
+        history.push("/login");
     }
+
+    const capitalizeFirstLetter = (word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+
     return (
         <Navbar bg="dark" variant="dark" expand="lg" className="p-2">
             <Navbar.Brand href="home">Paint Company</Navbar.Brand>
@@ -34,10 +42,8 @@ const Header = ({ userRole, setIsLoggedIn, setUserRole, setCurrentUser }) => {
                     )}
                 </Nav>
             </Navbar.Collapse>
-            <div>
-                
-            </div>
-            <Button variant="outline-light" onClick={handleLogout}>Logout</Button>
+            <span className="text-light">Welcome, {capitalizeFirstLetter(currentUser)}! &nbsp;&nbsp;</span>
+            <Button variant="outline-light link" onClick={handleLogout} href="/login">Logout</Button>
         </Navbar>
     );
 };
