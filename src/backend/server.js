@@ -76,10 +76,11 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
         console.err("Could not create table 'users': ", err.message);
     } else {
         const usersTemplate = [
-            {"name": "john", "role": "view", "enabled": "true"},
-            {"name": "jane", "role": "crud", "enabled": "true"},
-            {"name": "adam", "role": "admin", "enabled": "true"},
-            {"name": "painter", "role": "crud", "enabled": "true"}
+            {"name": "john", "role": "view", "enabled": "Yes"},
+            {"name": "jane", "role": "crud", "enabled": "Yes"},
+            {"name": "adam", "role": "admin", "enabled": "Yes"},
+            {"name": "painter", "role": "crud", "enabled": "Yes"},
+            {"name": "manager", "role": "manager", "enabled": "Yes"}
         ]
         usersTemplate.forEach((user) => {
             checkUserExists(user.name).then((exists) => {
@@ -142,6 +143,20 @@ app.put("/paints/update", (req, res) => {
     });
 });
 
+app.get("/users", (req, res) => {
+    const query = "SELECT * FROM users";
+
+    db.all(query, (err, rows) => {
+        if (err) {
+            console.error('Error querying database:', err.message);
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else if (!rows) {
+            res.status(404).json({ error: 'Invalid login, user not found' });
+        } else {
+            res.json(rows);
+        }
+    })
+});
 
 app.get("/users/:username", (req, res) => {
     const usename = req.params.username;
@@ -155,6 +170,35 @@ app.get("/users/:username", (req, res) => {
             res.status(404).json({ error: 'Invalid login, user not found' });
         } else {
             res.json(row);
+        }
+    });
+});
+
+app.put("/users/update", (req, res) => {
+    let query = "UPDATE users SET ";
+    let params = [];
+    const { username, role, enabled } = req.body;
+
+    if (role !== "") {
+        query += "role = ?, ";
+        params.push(role);
+    }
+
+    if (enabled !== "") {
+        query += "enabled = ?";
+        params.push(enabled);
+    } else {
+        query = query.slice(0, -2);
+    }
+
+    query += " WHERE username = ?";
+    params.push(username);
+
+    db.run(query, params, (err) => {
+        if (err) {
+            res.status(500).json({ error: "Error updating user: " + err });
+        } else {
+            res.status(200).json({ message: "User updated successfully" });
         }
     });
 });

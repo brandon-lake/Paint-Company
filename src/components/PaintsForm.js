@@ -37,7 +37,6 @@ const PaintsForm = ({ paints, fetchPaints }) => {
         
         const data = { colour: selectedColour, status: selectedStatus, stock: newStock };
         try {
-            console.log(data);
             const response = await fetch(`http://localhost:3001/paints/update`, {
                 method: 'PUT',
                 headers: {
@@ -50,7 +49,6 @@ const PaintsForm = ({ paints, fetchPaints }) => {
                 throw new Error('Failed to update paints');
             }
         
-            console.log('Paint updated successfully');
             fetchPaints();
         } catch (error) {
             console.error('Error updating paint:', error);

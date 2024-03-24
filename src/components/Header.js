@@ -24,18 +24,18 @@ const Header = ({ userRole, setUserRole, setIsLoggedIn, currentUser, setCurrentU
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
                     <Nav.Link href="home">Home</Nav.Link>
-
+                    {userRole === "admin" && (
+                        <Nav.Link href="users">User Management</Nav.Link>
+                    )}
+                    
                     {userRole !== "admin" && (
                         <Nav.Link href="stock">Paint Stock</Nav.Link>
                     )}
 
-                    {userRole === "crud" && (
+                    {userRole === "manager" && (
                         <Nav.Link href="board">Kanban Board</Nav.Link>
                     )}
 
-                    {userRole === "admin" && (
-                        <Nav.Link href="users">User Management</Nav.Link>
-                    )}
                 </Nav>
             </Navbar.Collapse>
             <span className="text-light">Welcome, {capitalizeFirstLetter(currentUser)}! &nbsp;&nbsp;</span>

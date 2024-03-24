@@ -3,3 +3,5 @@ export const capitalizeFirstLetter = (word) => {
 }
 
 export const statusOptions = ["available", "running low", "out of stock"];
+
+export const userRolesToReadableMap = {"view": "View Only", "crud": "View & Update/Edit", "manager": "Manager", "admin": "Administrator"};

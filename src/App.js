@@ -7,8 +7,9 @@ import PrivateRoute from './components/PrivateRoute';
 import Header from './components/Header';
 import LoginPage from './components/LoginPage';
 import PaintBoard from './components/PaintBoard';
-import UserManagement from './components/UserManagement';
 import PaintStock from './components/PaintStock';
+import UserManagement from './components/UserManagement';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -34,7 +35,6 @@ function App() {
         if (userRole) {
             setUserRole(userRole);
         }
-        // console.log(isLoggedIn + " app")
     }, []);
 
     return (
@@ -53,19 +53,21 @@ function App() {
                         <PrivateRoute path="/" exact component={Home} isLoggedIn={isLoggedIn} />
                         <PrivateRoute path="/home" component={Home} isLoggedIn={isLoggedIn} />
 
-                        {userRole !== "admin"
-                            ? <PrivateRoute path="/stock" component={PaintStock} isLoggedIn={isLoggedIn} userRole={userRole} />
-                            : <PrivateRoute path="/" />
+                        {userRole === "admin" 
+                            ? <PrivateRoute path="/users" component={UserManagement} isLoggedIn={true} />
+                            : <Redirect from="/users" to="/home" />
                         }
 
-                        {userRole === "crud"
+                        {userRole !== "admin" 
+                            ? <PrivateRoute path="/stock" component={PaintStock} isLoggedIn={isLoggedIn} userRole={userRole} />
+                            : <Redirect from="/stock" to="/home" />
+                        }
+
+                        {userRole === "manager"
                             ? <PrivateRoute path="/board" component={PaintBoard} isLoggedIn={isLoggedIn} />
-                            : <PrivateRoute path="/" />
+                            : <Redirect from="/board" to="/home" />
                         }
-                        {userRole === "admin"
-                            ? <PrivateRoute path="/users" component={UserManagement} isLoggedIn={isLoggedIn} />
-                            : <PrivateRoute path="/" />
-                        }
+                        <PrivateRoute component={Home} isLoggedIn={isLoggedIn} />                        
                     </Switch>
                 </div>
             </Router>      

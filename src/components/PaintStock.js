@@ -11,13 +11,11 @@ const PaintStock = ({userRole}) => {
     }, []);
 
     const fetchPaints = () => {
-        // console.log("fetching...");
         fetch("http://localhost:3001/paints")
             .then(response => {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
                 setPaints(data);
             })
             .catch(error => {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserRole, setCurrentUser }) => {
     const [username, setUsername] = useState("");
@@ -20,7 +21,9 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserRole, setCurrentUser }) =
         }
     }, [isLoggedIn, history]);
 
-    const handleLoginRequest = (e) => {
+    const handleLoginRequest = async (e) => {
+        e.preventDefault();
+
         let user = username.trim().toLocaleLowerCase();
 
         fetch(`http://localhost:3001/users/${user}`)
@@ -28,15 +31,19 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserRole, setCurrentUser }) =
                 return response.json();
             })
             .then(data => {
+                // this means we have returned a user object from the database
                 if ('id' in data) {
-                    setIsLoggedIn(true);
-                    setUserRole(data.role);
-                    setCurrentUser(data.username);
-                    localStorage.setItem("loggedIn", true);
-                    localStorage.setItem("paintUser", data.username);
-                    localStorage.setItem("paintRole", data.role);
-
-                    history.push('/home');
+                    // check if the user is disabled
+                    if (data.enabled === "Yes") {
+                        setIsLoggedIn(true);
+                        setUserRole(data.role);
+                        setCurrentUser(data.username);
+                        localStorage.setItem("loggedIn", true);
+                        localStorage.setItem("paintUser", data.username);
+                        localStorage.setItem("paintRole", data.role);
+                    } else {
+                        setErrorMessage("Your login has been disabled, please contact a server Administrator.");
+                    }
                 } else {
                     setErrorMessage(data.error);
                 }
@@ -51,7 +58,7 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserRole, setCurrentUser }) =
             <Container>
             <h1 className="mt-5">Login</h1>
             <Form className="mt-3" onSubmit={handleLoginRequest}>
-                <Form.Label>(Try logging in as "John", "Jane", "Adam", or "Painter")</Form.Label>
+                <Form.Label>(Try logging in as John, Jane, Painter, Adam, or Manager)</Form.Label>
                 <Form.Control type="text" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
                 <Button variant="primary" type="submit" className="mt-3">Login</Button>
             </Form>
