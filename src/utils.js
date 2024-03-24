@@ -1,0 +1,5 @@
+export const capitalizeFirstLetter = (word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+export const statusOptions = ["available", "running low", "out of stock"];

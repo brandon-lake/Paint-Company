@@ -1,8 +1,8 @@
 import React from "react";
-import { Redirect } from 'react-router-dom';
 import { Navbar, Nav, Button } from "react-bootstrap";
 import { UserRole } from "../consts/UserRoles";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import { capitalizeFirstLetter } from "../utils";
 
 const Header = ({ userRole, setUserRole, setIsLoggedIn, currentUser, setCurrentUser }) => {
     let history = useHistory();
@@ -15,10 +15,6 @@ const Header = ({ userRole, setUserRole, setIsLoggedIn, currentUser, setCurrentU
         localStorage.removeItem("paintUser");
         localStorage.removeItem("paintRole");
         history.push("/login");
-    }
-
-    const capitalizeFirstLetter = (word) => {
-        return word.charAt(0).toUpperCase() + word.slice(1);
     }
 
     return (

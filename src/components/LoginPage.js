@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
-import { UserRole } from "../consts/UserRoles";
 
 const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserRole, setCurrentUser }) => {
     const [username, setUsername] = useState("");
@@ -21,16 +20,14 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserRole, setCurrentUser }) =
         }
     }, [isLoggedIn, history]);
 
-    const handleLoginRequest = async (e) => {
+    const handleLoginRequest = (e) => {
         let user = username.trim().toLocaleLowerCase();
-        let role = UserRole.NONE;
 
-        await fetch(`http://localhost:3001/users/${user}`)
+        fetch(`http://localhost:3001/users/${user}`)
             .then(response => {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
                 if ('id' in data) {
                     setIsLoggedIn(true);
                     setUserRole(data.role);

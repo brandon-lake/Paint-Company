@@ -34,40 +34,41 @@ function App() {
         if (userRole) {
             setUserRole(userRole);
         }
+        // console.log(isLoggedIn + " app")
     }, []);
 
     return (
         <div className="App">
-        <Router>
-            <div>
-            {userRole !== "none" && 
-                <Header userRole={userRole} setUserRole={setUserRole} setIsLoggedIn={setIsLoggedIn} currentUser={currentUser} setCurrentUser={setCurrentUser}/>
-            }
-            <Switch>
-                <Route path='/login' render={(props) => (
-                    <LoginPage {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} setCurrentUser={setCurrentUser} />
-                    )}
-                />
+            <Router>
+                <div>
+                    {userRole !== "none" && 
+                        <Header userRole={userRole} setUserRole={setUserRole} setIsLoggedIn={setIsLoggedIn} currentUser={currentUser} setCurrentUser={setCurrentUser}/>
+                    }
+                    <Switch>
+                        <Route path='/login' render={(props) => (
+                            <LoginPage {...props} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} setCurrentUser={setCurrentUser} />
+                            )}
+                        />
 
-                <PrivateRoute path="/" exact component={Home} isLoggedIn={isLoggedIn} />
-                <PrivateRoute path="/home" component={Home} isLoggedIn={isLoggedIn} />
+                        <PrivateRoute path="/" exact component={Home} isLoggedIn={isLoggedIn} />
+                        <PrivateRoute path="/home" component={Home} isLoggedIn={isLoggedIn} />
 
-                {userRole !== "admin"
-                    ? <PrivateRoute path="/stock" component={PaintStock} isLoggedIn={isLoggedIn} />
-                    : <PrivateRoute to="/" />
-                }
+                        {userRole !== "admin"
+                            ? <PrivateRoute path="/stock" component={PaintStock} isLoggedIn={isLoggedIn} userRole={userRole} />
+                            : <PrivateRoute path="/" />
+                        }
 
-                {userRole === "crud"
-                    ? <PrivateRoute path="/board" component={PaintBoard} isLoggedIn={isLoggedIn} />
-                    : <PrivateRoute to="/" />
-                }
-                {userRole === "admin"
-                    ? <Route path="/users" component={UserManagement} isLoggedIn={isLoggedIn} />
-                    : <Route to="/" />
-                }
-            </Switch>
-            </div>
-        </Router>      
+                        {userRole === "crud"
+                            ? <PrivateRoute path="/board" component={PaintBoard} isLoggedIn={isLoggedIn} />
+                            : <PrivateRoute path="/" />
+                        }
+                        {userRole === "admin"
+                            ? <PrivateRoute path="/users" component={UserManagement} isLoggedIn={isLoggedIn} />
+                            : <PrivateRoute path="/" />
+                        }
+                    </Switch>
+                </div>
+            </Router>      
         </div>
     );
 }

@@ -5,6 +5,7 @@ const port = 3001;
 const sqlite3 = require('sqlite3').verbose()
 
 app.use(cors());
+app.use(express.json());
 
 // database setup
 const db = new sqlite3.Database("paints.db", (err) => {
@@ -112,12 +113,33 @@ db.run(`CREATE TABLE IF NOT EXISTS paints (
 // end of database setup
 
 // routes
-app.get("/", (req, res) => {
-    res.send("hi");
+app.get("/paints", (req, res) => {
+    const query = "SELECT * FROM paints";
+
+    db.all(query, (err, rows) => {
+        if (err) {
+            console.error('Error querying database:', err.message);
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else if (!rows) {
+            res.status(404).json({ error: 'Invalid login, user not found' });
+        } else {
+            res.json(rows);
+        }
+    });
 });
 
-app.get("/paints", (req, res) => {
-    res.send("Hello from Express!");
+app.put("/paints/update", (req, res) => {
+    const query = "UPDATE paints SET status = ?, stock = ? WHERE colour = ?";
+    const { colour, status, stock } = req.body;
+
+
+    db.run(query, [status, stock, colour], (err) => {
+        if (err) {
+            res.status(500).json({ error: "Error updating paint: " + err });
+        } else {
+            res.status(200).json({ message: "Paint updated successfully" });
+        }
+    });
 });
 
 
