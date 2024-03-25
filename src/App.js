@@ -12,14 +12,17 @@ import UserManagement from './components/UserManagement';
 import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 function App() {
+    // tracks whether the user is logged in.  Stored in local storage
     const [isLoggedIn, setIsLoggedIn] = useState(() => {
         const loggedIn = localStorage.getItem("loggedIn");
         return loggedIn ? JSON.parse(loggedIn) : false;
     });
+    // tracks the logged in users role.  Stored in local storage
     const [userRole, setUserRole] = useState(() => {
         const userRole = localStorage.getItem("paintRole");
         return userRole ? userRole : UserRole.NONE;
     });
+    // tracks the logged in username.  Stored in local storage
     const [currentUser, setCurrentUser] = useState(() => {
         const currentUser = localStorage.getItem("paintUser");
         return currentUser ? currentUser : "";

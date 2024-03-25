@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
-import { statusOptions, capitalizeFirstLetter, userRolesToReadableMap } from '../utils';
+import { capitalizeFirstLetter, userRolesToReadableMap } from '../utils';
 
 const UserForm = ({ users, fetchUsers }) => {
+    // the current selected user from the dropdown select
     const [selectedUser, setSelectedUser] = useState("");
+    // the current selected access type from the dropdown select
     const [selectedAccessType, setSelectedAccessType] = useState("");
+    // the current selected enabled option from the dropdown select
     const [selectedEnabled, setSelectedEnabled] = useState("");
+    // error message to be displayed on invalid form submission
     const [errorMessage, setErrorMessage] = useState("");
 
+    // show error message for only 4 seconds
     useEffect(() => {
         const timeout = setTimeout(() => {
             setErrorMessage("");
@@ -15,6 +20,7 @@ const UserForm = ({ users, fetchUsers }) => {
         return () => clearTimeout(timeout);
     }, [errorMessage]);
     
+    // get a list of just the usernames from the list of users
     const userList = [...new Set(users.map(user => user.username))]
 
     const handleUserChange = (e) => {
@@ -49,7 +55,6 @@ const UserForm = ({ users, fetchUsers }) => {
                 throw new Error('Failed to update users');
             }
         
-            console.log('Users updated successfully');
             fetchUsers();
         } catch (error) {
             console.error('Error updating user:', error);

@@ -4,6 +4,7 @@ import { capitalizeFirstLetter } from "../utils";
 import PaintsForm from './PaintsForm';
 
 const PaintStock = ({userRole}) => {
+    // list of all paints in the database
     const [paints, setPaints] = useState([]);
 
     useEffect(() => {

@@ -3,11 +3,16 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 import { statusOptions, capitalizeFirstLetter } from '../utils';
 
 const PaintsForm = ({ paints, fetchPaints }) => {
+    // the current selected colour from the dropdown select
     const [selectedColour, setSelectedColour] = useState("");
+    // the current selected status from the dropdown select
     const [selectedStatus, setSelectedStatus] = useState("");
+    // the current input stock from the text input
     const [newStock, setNewStock] = useState("");
+    // error message to be displayed on invalid form submission
     const [errorMessage, setErrorMessage] = useState("");
 
+    // show error message for only 4 seconds
     useEffect(() => {
         const timeout = setTimeout(() => {
             setErrorMessage("");
@@ -30,6 +35,10 @@ const PaintsForm = ({ paints, fetchPaints }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        /* If I was to spend more time on this I think I would either remove the ability to update status here
+         * since the managers can update that on the kanban board.  Or if not, I would change the query to allow
+         * only some parameters and build the sqlite query based on provided parameters.  Not sure which solution I prefer.
+         */
         if (selectedColour === "" || selectedStatus === "" || newStock === "") {
             setErrorMessage("Cannot submit form with empty fields");
             return;

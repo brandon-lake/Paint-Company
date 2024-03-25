@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, Form, Button } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserRole, setCurrentUser }) => {
+    // username from the text input field
     const [username, setUsername] = useState("");
+    // error message to be shown if login is valid or disabled
     const [errorMessage, setErrorMessage] = useState("");
+    // used for page routing
     const history = useHistory();
 
+    // show error message for only 4 seconds
     useEffect(() => {
         const timeout = setTimeout(() => {
             setErrorMessage("");

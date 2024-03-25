@@ -1,16 +1,21 @@
 import React, { useEffect, useRef } from 'react';
 import { Card } from 'react-bootstrap';
+import { capitalizeFirstLetter } from '../utils';
 
-const StickyNote = ({ colour, stock, xPosition, yPosition, containerRef }) => {
+const StickyNote = ({ paint, xPosition, yPosition, containerRef, updateIfChangedColumn }) => {
+    // reference to this instance of a stickynote
     const stickyRef = useRef(null);
+    // tracks whether a stickynote is currently being held
     const isNoteHeld = useRef(false);
+    // tracks important coordinates - start location where a note is first grabbed, and end location when a note is released
     const coords = useRef({
         startX: 0,
         startY: 0,
         lastX: xPosition,
-        lastY: xPosition
+        lastY: yPosition
     });
 
+    // solution isn't perfect, but I am happy given the time constraints
     useEffect(() => {
         if (!stickyRef.current || !containerRef.current) {
             return;
@@ -20,17 +25,24 @@ const StickyNote = ({ colour, stock, xPosition, yPosition, containerRef }) => {
         const container = containerRef.current;
 
         const grabNote = (mouseEvent) => {
-            console.log(`Note is at (${coords.current.lastX}, ${coords.current.lastY})`);
+            isNoteHeld.current = true;
+            
             coords.current.startX = mouseEvent.clientX;
             coords.current.startY = mouseEvent.clientY;
-            isNoteHeld.current = true;
         }
         const releaseNote = (mouseEvent) => {
+            if (isNoteHeld.current === false) {
+                return;
+            }
+
             isNoteHeld.current = false;
 
             coords.current.lastX = note.offsetLeft;
             coords.current.lastY = note.offsetTop;
+            updateIfChangedColumn(paint, coords.current.lastX);
         }
+        
+        // update position based on the mouses relative movement since the note was grabbed
         const dragNote = (mouseEvent) => {
             if (!isNoteHeld.current) {
                 return;
@@ -46,23 +58,27 @@ const StickyNote = ({ colour, stock, xPosition, yPosition, containerRef }) => {
         note.addEventListener("mousedown", grabNote);
         note.addEventListener("mouseup", releaseNote);
         container.addEventListener("mousemove", dragNote);
-        container.addEventListener("mouseup", releaseNote);
+        container.addEventListener("mouseleave", releaseNote);
 
         const cleanup = () => {
             note.removeEventListener("mousedown", grabNote);
             note.removeEventListener("mouseup", releaseNote);
+            container.removeEventListener("mousemove", dragNote);
+            container.removeEventListener("mouseleave", releaseNote);
+
         }
         
         return cleanup;
     }, []);
 
     return (
-        <Card ref={stickyRef} className="position-absolute pt-2" style={{ height: '7rem', backgroundColor: colour, top: yPosition, left: xPosition, cursor: 'pointer' }}>
+        <Card ref={stickyRef} className="position-absolute" style={{ height: '7rem', backgroundColor: paint.colour, top: yPosition, left: xPosition, cursor: 'pointer' }}>
             {/* dont love hard coding this colour but it works for now */}
-            <Card.Body style={{ color: colour === "black" ? "white" : "black" }}>
-                <Card.Title>{colour}</Card.Title>
+            <Card.Body style={{ color: paint.colour === "black" ? "white" : "black" }}>
+                <Card.Title>{capitalizeFirstLetter(paint.colour)}</Card.Title>
                 <Card.Text>
-                    <strong>Stock:</strong> {stock}
+                    <strong>Stock:</strong> {paint.stock}<br />
+                    <i>{paint.status}</i>
                 </Card.Text>
             </Card.Body>
         </Card>

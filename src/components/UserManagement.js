@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Table } from 'react-bootstrap';
+import { Container, Table } from 'react-bootstrap';
 import { userRolesToReadableMap, capitalizeFirstLetter } from '../utils';
 import UserForm from './UserForm';
 
 const UserManagement = () => {
+    // contains all users from the database
     const [users, setUsers] = useState([]);
 
     useEffect(() => {

@@ -65,7 +65,7 @@ function insertUser(user) {
         }
     });
 }
-
+// create and populate table if it doesn't yet exist
 db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
     username TEXT,
@@ -91,7 +91,7 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
         });
     }
 });
-
+// create and populate table if it doesn't yet exist
 db.run(`CREATE TABLE IF NOT EXISTS paints (
     id INTEGER PRIMARY KEY,
     colour TEXT,
@@ -136,6 +136,21 @@ app.put("/paints/update", (req, res) => {
 
     db.run(query, [status, stock, colour], (err) => {
         if (err) {
+            res.status(500).json({ error: "Error updating paint: " + err });
+        } else {
+            res.status(200).json({ message: "Paint updated successfully" });
+        }
+    });
+});
+
+app.put("/paints/updateStatus", (req, res) => {
+    const query = "UPDATE paints SET status = ? WHERE colour = ?";
+    const { colour, status } = req.body;
+
+
+    db.run(query, [status, colour], (err) => {
+        if (err) {
+            console.error(err);
             res.status(500).json({ error: "Error updating paint: " + err });
         } else {
             res.status(200).json({ message: "Paint updated successfully" });
